@@ -12,7 +12,10 @@ FROM python:3.11-slim AS production
 RUN apt-get update && apt-get upgrade -y && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install --no-cache-dir --upgrade pip==26.2.1 setuptools==84.0.0 wheel==0.48.0
+# Production doesn't need pip at runtime (app deps are copied pre-built from the
+# builder stage), and pip vendors its own copies of setuptools/msgpack that can
+# be vulnerable regardless of pip version — so remove it instead of chasing pins.
+RUN python -m pip uninstall -y pip setuptools wheel
 
 RUN groupadd -r appgroup && useradd -r -g appgroup -m appuser
 
