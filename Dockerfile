@@ -2,10 +2,17 @@ FROM python:3.11-slim AS builder
 
 WORKDIR /app
 
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+
 COPY requirements.txt .
 RUN pip install --user --no-cache-dir -r requirements.txt
 
 FROM python:3.11-slim AS production
+
+RUN apt-get update && apt-get upgrade -y && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
 RUN groupadd -r appgroup && useradd -r -g appgroup -m appuser
 
