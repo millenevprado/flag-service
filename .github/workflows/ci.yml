@@ -1,9 +1,4 @@
-# ============================================
-# WORKFLOW: CI - flag-service
-# Build & Unit Test (instala dependências, valida o
-# código e roda os testes unitários, se houver)
-# ============================================
-name: 🔄 CI - flag-service
+name: CI - flag-service
 
 on:
   push:
@@ -12,37 +7,29 @@ on:
     branches: [main]
 
 jobs:
-  # ============================================
-  # JOB: Build & Unit Test
-  # ============================================
   build-test:
-    name: 🏗️ Build & Unit Test
+    name: Build & Unit Test
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout do código
-      - name: 📥 Checkout
+      - name: Checkout
         uses: actions/checkout@v4
 
-      # Step 2: Configurar Python
-      - name: 🐍 Setup Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: pip
 
-      # Step 3: Instalar dependências
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Step 4: "Build" - checagem de sintaxe do código
-      - name: 🏗️ Build (syntax check)
+      - name: Build (syntax check)
         run: python -m py_compile app.py
 
-      # Step 5: Rodar testes unitários (se houver)
-      - name: 🧪 Run unit tests
+      - name: Run unit tests
         run: |
           if find . -name "test_*.py" -o -name "*_test.py" | grep -q .; then
             pip install pytest
