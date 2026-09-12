@@ -2,7 +2,7 @@ FROM python:3.11-slim AS builder
 
 WORKDIR /app
 
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+RUN pip install --no-cache-dir --upgrade pip==26.2.1 setuptools==84.0.0 wheel==0.48.0
 
 COPY requirements.txt .
 RUN pip install --user --no-cache-dir -r requirements.txt
@@ -12,7 +12,7 @@ FROM python:3.11-slim AS production
 RUN apt-get update && apt-get upgrade -y && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+RUN pip install --no-cache-dir --upgrade pip==26.2.1 setuptools==84.0.0 wheel==0.48.0
 
 RUN groupadd -r appgroup && useradd -r -g appgroup -m appuser
 
