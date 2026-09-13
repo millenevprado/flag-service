@@ -26,8 +26,10 @@ Dois jobs independentes:
 - Gera uma tag de imagem no formato `v1.0.0-<sha curto>`.
 - Constrói a imagem Docker e roda `trivy` em modo image scan (`CRITICAL,HIGH`).
 - Em eventos de `push` para `main`: autentica na AWS, faz login no Amazon ECR e publica a imagem no repositório `flag-service`.
+- Em seguida, faz checkout do repositório [`fiap-challenge-3-gitops`](https://github.com/millenevprado/fiap-challenge-3-gitops), atualiza a linha `image:` do `flag-service/deployment.yaml` com a nova tag e faz commit/push automático (entrega contínua).
 
 ### Secrets necessários
 
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
+- `GITOPS_PAT` — Personal Access Token com permissão de escrita (`Contents: Read and write`) no repositório `fiap-challenge-3-gitops`.
