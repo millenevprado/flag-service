@@ -1,26 +1,32 @@
 # CI/CD Workflows
 
-Este diretório contém os workflows do GitHub Actions do `flag-service`. Todos são disparados em `push` e `pull_request` para a branch `main`.
+Este diretório contém o workflow do GitHub Actions do `flag-service` (`ci.yml`), disparado em `push` e `pull_request` para a branch `main`. Os jobs rodam em sequência via `needs`, então uma falha em um estágio impede os estágios seguintes de rodar.
 
-## `build-test.yml` — Build & Unit Test
+## `build-test` — Build & Unit Test
 
 - Instala as dependências do `requirements.txt`.
 - Valida a sintaxe do `app.py` (`py_compile`).
 - Executa os testes unitários com `pytest`, se houver arquivos `test_*.py` ou `*_test.py` no repositório.
 
-## `lint.yml` — Lint & Static Analysis
+## `lint` — Lint & Static Analysis
 
 - Instala as dependências do projeto.
 - Executa `flake8` (limite de 120 colunas por linha) para checagem de estilo e qualidade do código Python.
 
-## `security-scan.yml` — Security Scan (SAST & SCA)
+## `security-scan` — Security Scan (SAST & SCA)
 
-Dois jobs independentes:
+Depende de `build-test` e `lint`.
 
-- **security-scan**: roda `bandit` (SAST) contra o código-fonte com severidade mínima `high`, e `trivy` (SCA) em modo filesystem para vulnerabilidades `CRITICAL` nas dependências.
-- **gitleaks**: escaneia o histórico do repositório em busca de segredos vazados (chaves, tokens, credenciais).
+- Roda `bandit` (SAST) contra o código-fonte com severidade mínima `high`.
+- Roda `trivy` (SCA) em modo filesystem para vulnerabilidades `CRITICAL` nas dependências.
 
-## `docker-build-push.yml` — Docker Build & Push
+## `gitleaks` — Secret Scanning
+
+- Escaneia o histórico do repositório em busca de segredos vazados (chaves, tokens, credenciais).
+
+## `docker-build-push` — Docker Build & Push
+
+Depende de `security-scan` e `gitleaks` — só roda se ambos passarem.
 
 - Faz lint do `Dockerfile` com `hadolint`.
 - Gera uma tag de imagem no formato `v1.0.0-<sha curto>`.
