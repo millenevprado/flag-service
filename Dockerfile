@@ -35,4 +35,7 @@ EXPOSE 8002
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8002/health')" || exit 1
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8002", "app:app"]
+# opentelemetry-instrument inicializa o SDK OTel (config via variáveis OTEL_*
+# do ConfigMap) e instrumenta Flask, requests/psycopg2/boto3 e logging sem
+# alterar o código: traces e métricas vão para o OTel Collector.
+CMD ["opentelemetry-instrument", "gunicorn", "--bind", "0.0.0.0:8002", "app:app"]
