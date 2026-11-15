@@ -4,4 +4,4 @@ psycopg2-binary==2.9.5
 gunicorn==26.2.0
 python-dotenv==0.21.0
 requests==2.34.2
-urllib3==2.7.0
+urllib3==2.8.0
